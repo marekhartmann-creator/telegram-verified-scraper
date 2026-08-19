@@ -1,13 +1,17 @@
 {
     "actorOutputSchemaVersion": 1,
     "title": "Telegram Channel Scraper output",
+    "description": "Where the verified posts and the per-channel verdicts end up.",
+    "type": "object",
     "properties": {
         "posts": {
+            "type": "string",
             "title": "Verified posts",
             "description": "One item per post that passed verification. A post is only written here when the channel it came from was confirmed readable.",
             "template": "{{links.apiDefaultDatasetUrl}}/items?clean=true"
         },
         "runSummary": {
+            "type": "string",
             "title": "Run summary and per-channel verdicts",
             "description": "Verdict (OK, EMPTY_VERIFIED, PARTIAL, FAILED), channel state, post id coverage and any page failures - for every requested channel.",
             "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/RUN_SUMMARY"
