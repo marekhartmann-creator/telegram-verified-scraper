@@ -1,0 +1,20 @@
+﻿name: live-smoke
+
+# The unit tests prove the parser is right about markup we captured.
+# This proves Telegram has not changed that markup since.
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install httpx selectolax
+      - name: Classify live channels and compare against captured signatures
+        run: python scripts/smoke.py
