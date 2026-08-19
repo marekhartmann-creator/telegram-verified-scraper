@@ -7,6 +7,6 @@
     "post-scraped": {
         "eventTitle": "Verified post",
         "eventDescription": "Charged per post that was verified and written to the dataset.",
-        "eventPriceUsd": 0.002
+        "eventPriceUsd": 0.0003
     }
 }
