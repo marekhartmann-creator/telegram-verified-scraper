@@ -45,6 +45,12 @@
             "description": "Photo, video, voice, document and sticker URLs.",
             "default": true
         },
+        "includeHtml": {
+            "title": "Include raw post HTML",
+            "type": "boolean",
+            "description": "Adds the original HTML of every post. Off by default: it roughly doubles the size of each result.",
+            "default": false
+        },
         "maxConcurrency": {
             "title": "Channels scraped in parallel",
             "type": "integer",

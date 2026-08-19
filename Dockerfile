@@ -7,4 +7,6 @@ RUN echo "Python version:" && python --version \
 
 COPY . ./
 
-CMD ["python3", "-m", "src.main"]
+# `-m src` runs src/__main__.py, which awaits main(). `-m src.main` would
+# import the module and exit without ever running the Actor.
+CMD ["python3", "-m", "src"]

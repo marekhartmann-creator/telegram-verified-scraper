@@ -51,6 +51,7 @@ class ScrapeOptions:
     max_date: datetime | None = None
     search_terms: tuple[str, ...] = ()
     include_media: bool = True
+    include_html: bool = False    # raw post HTML roughly doubles item size
     max_pages: int = 500          # hard stop, protects the customer's bill
     concurrency: int = 5          # channels fetched in parallel
 
@@ -120,8 +121,13 @@ async def scrape_channel(
                 continue
             if not _matches_terms(post, options.search_terms):
                 continue
+            drop = set()
             if not options.include_media:
-                post = {k: v for k, v in post.items() if k != "media"}
+                drop.add("media")
+            if not options.include_html:
+                drop.add("textHtml")
+            if drop:
+                post = {k: v for k, v in post.items() if k not in drop}
             page_batch.append(post)
 
         if options.max_posts:

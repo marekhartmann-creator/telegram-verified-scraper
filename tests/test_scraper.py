@@ -174,3 +174,15 @@ def test_scrape_channels_isolates_a_broken_channel():
     )
     verdicts = {r.handle: r.verdict for _, r in results}
     assert verdicts == {"good": "OK", "broken": "FAILED"}
+
+
+def test_raw_html_is_off_by_default_and_can_be_switched_on():
+    """textHtml roughly doubles item size, so the customer opts in."""
+    client = FakeClient({None: ok(fixture("channel_page.html"))})
+    posts, _ = run(scrape_channel(client, "testchannel", ScrapeOptions(max_posts=1)))
+    assert "textHtml" not in posts[0]
+
+    client = FakeClient({None: ok(fixture("channel_page.html"))})
+    options = ScrapeOptions(max_posts=1, include_html=True)
+    posts, _ = run(scrape_channel(client, "testchannel", options))
+    assert posts[0]["textHtml"].startswith("<div")

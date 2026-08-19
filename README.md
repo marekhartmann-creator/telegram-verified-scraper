@@ -27,10 +27,14 @@ This Actor classifies the channel **before** it trusts any post count:
 | `PUBLIC_PREVIEWABLE` | Real channel, readable | Posts |
 | `EXISTS_NO_PREVIEW` | Real channel, Telegram serves no web preview | Explicit error |
 | `PRIVATE` | Invite-only | Explicit error |
-| `RESTRICTED` | Age / abuse restricted on the web | Explicit error |
+| `RESTRICTED` | Telegram serves no public page for the handle | Explicit error |
 | `NOT_A_CHANNEL` | Handle is a user, bot or group | Explicit error |
 | `NOT_FOUND` | Nothing at this handle (usually a typo) | Explicit error |
 | `UNREACHABLE` | Telegram could not be reached | Explicit error |
+
+Every one of those states except `PRIVATE` is checked against live Telegram by
+`scripts/smoke.py`, which fails the build when a handle stops classifying the way
+it did when the signature was captured.
 
 On top of that, every channel gets a verification report:
 
@@ -61,9 +65,14 @@ If you need member lists, this is the wrong tool — on purpose.
   "minDate": "2026-01-01",
   "searchTerms": ["release", "update"],
   "includeMediaUrls": true,
+  "maxConcurrency": 5,
   "failOnUnreadableChannel": true
 }
 ```
+
+Channels are fetched in parallel (`maxConcurrency`, 1-10). Telegram round-trips
+dominate the wall clock, and compute time is billed, so waiting serially would be
+your money spent on latency.
 
 `failOnUnreadableChannel` (default **on**) ends the run as `FAILED` with a reason
 when any requested channel could not be fully read. Turn it off to accept partial

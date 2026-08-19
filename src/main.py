@@ -73,16 +73,23 @@ async def main() -> None:
             max_date=parse_iso(raw_input.get("maxDate")),
             search_terms=tuple(raw_input.get("searchTerms") or ()),
             include_media=bool(raw_input.get("includeMediaUrls", True)),
+            include_html=bool(raw_input.get("includeHtml", False)),
             concurrency=max(1, min(10, int(raw_input.get("maxConcurrency") or 5))),
         )
         fail_on_unreadable = bool(raw_input.get("failOnUnreadableChannel", True))
 
+        # Proxy is a nice-to-have, never a reason to kill the run: without an
+        # Apify Proxy password (local runs, plans without proxy access) the SDK
+        # raises, and t.me is perfectly reachable directly.
         proxy_url: str | None = None
-        proxy_cfg = await Actor.create_proxy_configuration(
-            actor_proxy_input=raw_input.get("proxyConfiguration")
-        )
-        if proxy_cfg:
-            proxy_url = await proxy_cfg.new_url()
+        try:
+            proxy_cfg = await Actor.create_proxy_configuration(
+                actor_proxy_input=raw_input.get("proxyConfiguration")
+            )
+            if proxy_cfg:
+                proxy_url = await proxy_cfg.new_url()
+        except Exception as exc:  # noqa: BLE001
+            Actor.log.warning(f"Proxy unavailable, continuing without it ({exc}).")
 
         reports: list[dict[str, Any]] = []
         total_posts = 0
@@ -116,7 +123,7 @@ async def main() -> None:
             "rejectedInputs": rejected,
             "reports": reports,
         }
-        await Actor.set_value("RUN_SUMMARY", summary)
+        await Actor.set_value("RUN_SUMMARY", summary, content_type="application/json")
         await Actor.push_data(summary)
 
         broken = [r for r in reports if r["verdict"] in ("FAILED", "PARTIAL")]

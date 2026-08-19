@@ -2,7 +2,7 @@
 
 **Vlastník:** Marek Hartmann
 **Založené:** 19. 8. 2026
-**Stav:** v0.2 — jadro postavené, otestované a živo overené proti Telegramu; nenasadené do Apify Store
+**Stav:** v0.6 — 46 testov, 8/8 živých stavov, Actor overený end-to-end pod Apify SDK; pripravené na push a build, nenasadené do Apify Store
 **Repo (plán):** github.com/marekhartmann-creator/telegram-verified-scraper
 **Časový rozpočet:** 2–4 dni
 **Peňažný rozpočet:** 0 € (podmienka: žiadna investícia pred prvým príjmom)
@@ -161,15 +161,74 @@ podložený, presné číslo nie.)
   incumbent nezachytí — parser tichého vráti 0 reakcií a zle pomenovaný stav.
   Verifikačná vrstva ich odhalila okamžite, lebo verdikt nesedel s obsahom.
 
+**19. 8. 2026 — v0.4, druhé kolo živej verifikácie**
+
+* Preverených 19 reálnych handle-ov, aby som našiel vzorky stavov, ktoré som
+  dovtedy len odhadoval. Výsledok: **klasifikátor mal vážnu chybu.**
+  * `rt_russian` (386 tisíc odberateľov) dostal verdikt **NOT_FOUND** — teda
+    "skontroluj si preklep" na kanáli, ktorý existuje. Príčina: Telegram tam
+    posiela rovnakú kostru stránky ako pri neexistujúcom handle, líši sa jedna
+    veta: *"you can **view posts by** @X"* (kanál existuje, preview nedáme)
+    oproti *"you can **contact** @X"* (nič tu nie je).
+  * `mdk` vracia rovno marketingovú stránku Telegramu bez `.tgme_page` —
+    handle je zablokovaný, nie neexistujúci. Nový podpis → `RESTRICTED`.
+  * `zerohedge` hovorí "view and join", ale má počet odberateľov → počítadlá
+    teraz prebíjajú boilerplate.
+  * Ironicky: bola to presne tá chyba, proti ktorej je celý produkt postavený,
+    len o krok vedľa — namiesto tichého prázdna nahlas nesprávny dôvod.
+* `scripts/smoke.py` je odteraz **živá regresná sada**: 8 handle-ov s očakávaným
+  stavom, pri nezhode končí exit kódom 1. Aktuálne **8/8**.
+* Overené naživo: PUBLIC_PREVIEWABLE, NOT_FOUND, EXISTS_NO_PREVIEW (dva rôzne
+  tvary), NOT_A_CHANNEL (skupina), RESTRICTED. Neoverené: PRIVATE, UNREACHABLE.
+* Pridaná **paralelizácia kanálov** (`maxConcurrency`, default 5). Telegram
+  round-tripy trvajú ~4-10 s na kanál; sériovo by zákazník platil compute za
+  čakanie.
+* **Dve chyby nájdené až prvým skutočným spustením Actora:**
+  1. `Dockerfile` mal `CMD python3 -m src.main` — to modul len naimportuje a
+     skončí. Actor by na Apify naštartoval a hneď dobehol bez práce. Správne
+     je `-m src`.
+  2. `create_proxy_configuration` vyhodí výnimku, keď nie je heslo k Apify
+     Proxy (lokálny beh, plán bez proxy) a zabije celý beh. Teraz je proxy
+     voliteľná — pri chybe sa loguje varovanie a ide sa priamo.
+* Pridané: GitHub Actions CI (pytest na 3.11-3.13), `.gitattributes` (LF),
+  ukážkový `storage/.../INPUT.json`, prvý git commit (40 súborov).
+
+**19. 8. 2026 — v0.6, prvý skutočný beh Actora**
+
+Spustené pod reálnym Apify SDK (4.0.1) v lokálnom režime. Toto odhalilo veci,
+ktoré ani testy, ani živý scraping nemohli:
+
+* `Dockerfile` mal `CMD python3 -m src.main` → modul sa naimportuje a proces
+  skončí. Na Apify by Actor „úspešne" dobehol za sekundu a neurobil nič.
+  Opravené na `-m src`.
+* `create_proxy_configuration` padne, keď nie je heslo k Apify Proxy. Zabíjalo
+  to celý beh. Proxy je teraz voliteľná.
+* `RUN_SUMMARY` sa ukladal bez `content_type`, čiže bez prípony `.json` a
+  neotvoriteľný v Console. Opravené.
+* `textHtml` zdvojnásobuje veľkosť každej položky → nový prepínač `includeHtml`,
+  default vypnutý.
+
+**Overenie sľubu produktu end-to-end:**
+
+| beh | vstup | výsledok |
+|---|---|---|
+| 1 | `durov`, `telegram` | exit **0**, 50 overených príspevkov, 2/2 kanály |
+| 2 | `durov`, `georgnews_typo_xx` | exit **1**, beh FAILED s dôvodom |
+
+Druhý riadok je celý produkt: incumbent by na tom istom vstupe ohlásil úspech,
+vrátil neúplný dataset a vyfakturoval.
+
 ## 9. Čo ďalej (poradie)
 
 1. ~~Živý smoke test~~ — hotové 19. 8. 2026, dve chyby nájdené a opravené.
-2. Doplniť živé prípady, ktoré zatiaľ nemám vzorku: súkromný kanál, obmedzený
-   (age-gated) kanál, skupina. Fixtures pre ne sú odhad, nie zachytený markup.
-3. Push do GitHubu, prepojiť s Apify, build.
-4. Nastaviť pay-per-event v Apify Console podľa `.actor/pay_per_event.json`.
-5. Publikovať, doplniť listing (README) a screenshot výstupu.
-6. Prvé recenzie: požiadať o feedback v Apify Discorde a v jednom OSINT/Telegram
+2. ~~Doplniť živé prípady~~ — hotové, chýba už len vzorka súkromného kanála
+   (`PRIVATE`); jeho fixture je stále odhad, nie zachytený markup.
+3. **Blokované na Marekovi:** `gh auth login` (GitHub CLI je nainštalovaný, ale
+   neprihlásený) → vytvoriť repo a pushnúť. Commit je pripravený.
+4. Prepojiť repo s Apify, build.
+5. Nastaviť pay-per-event v Apify Console podľa `.actor/pay_per_event.json`.
+6. Publikovať, doplniť listing (README) a screenshot výstupu.
+7. Prvé recenzie: požiadať o feedback v Apify Discorde a v jednom OSINT/Telegram
    komunitnom vlákne — bez toho Actor nikto nenájde.
 
 ## 10. Riziká
