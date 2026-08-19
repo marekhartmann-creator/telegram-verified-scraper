@@ -9,7 +9,8 @@
             "description": "Channel handles or t.me links, e.g. durov, @durov, https://t.me/durov. Private channels, groups and user profiles are not supported by design.",
             "editor": "stringList",
             "prefill": [
-                "durov"
+                "durov",
+                "telegram"
             ],
             "minItems": 1
         },
@@ -19,7 +20,8 @@
             "description": "Hard cap on posts per channel. 0 means the whole readable history (can be expensive).",
             "default": 100,
             "minimum": 0,
-            "unit": "posts"
+            "unit": "posts",
+            "prefill": 25
         },
         "minDate": {
             "title": "Only posts newer than",
