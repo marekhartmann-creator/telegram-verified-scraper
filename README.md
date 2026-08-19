@@ -114,12 +114,15 @@ including runs that fail.
 
 ## Pricing
 
-Pay per event:
+**Free while this Actor is in early access.** You only pay Apify platform usage
+(compute), and that bill is deliberately small: this Actor talks plain HTTP to
+Telegram's server-rendered pages instead of driving a headless browser, so it
+runs in a fraction of the memory a browser-based scraper needs.
 
-* **Actor start — $0** (deliberately: an empty run must not cost you anything)
-* **$0.002 per verified post** written to the dataset
-
-Posts that fail verification are never written, and therefore never charged.
+Pay-per-result pricing will be introduced later. When it is, the rule stays the
+same as the promise above: **no start fee, and you are charged only for posts
+that passed verification.** A run that returns nothing will never cost you
+anything.
 
 ## Use cases
 
