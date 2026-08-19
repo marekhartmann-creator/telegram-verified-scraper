@@ -274,3 +274,35 @@ vrátil neúplný dataset a vyfakturoval.
 * Repo: pushnuté 19. 8. 2026, 39 súborov, 2 commity, `main`.
 * GitHub Actions `tests`: **success** (pytest na Python 3.11/3.12/3.13, Linux) —
   prvé potvrdenie, že kód beží aj mimo Windows/3.14, kde bol vyvíjaný.
+
+
+## 13. Publikovane (19. 8. 2026)
+
+**https://apify.com/marekhartmann/telegram-channel-scraper** - verejne na Apify Store,
+zadarmo pocas early access (pay per usage), bez monetizacie.
+
+Cesta od "checklist je zeleny" k publikovanemu Actorovi odhalila styri veci:
+
+1. **Output schema** - Apify vyzaduje pole `output` v `.actor/actor.json`; dataset view
+   schema mu nestaci. Ich validator navyse vyzaduje `type` v kazdej polozke, hoci
+   minimalny priklad v ich dokumentacii ho neuvadza.
+2. **Key-value store schema** musi mat `actorKeyValueStoreSchemaVersion`.
+3. **`?clean=true` v output sablone** rozbilo kartu Output - Apify si parametre v URL
+   typuje a `true` precitala ako text. Beh pritom presiel; dataset bol v poriadku, len
+   sa zakaznikovi nezobrazil. Tichá chyba v konfiguracii produktu, ktory je proti tichym
+   chybam postaveny.
+4. **Deployment key dialog** blokoval buildy - Apify pyta SSH kluc do GitHub repa. Repo
+   je verejne a HTTPS klonovanie funguje, takze "Don't add".
+
+Stav po dokonceni: build **0.0.7** (`latest`), posledny beh Succeeded, 100 vysledkov,
+11 s, $0.001. Karta Output sa vykresluje spravne pod pohladom "Verified posts".
+
+**Ochrana proti driftu Telegramu:** tyzdenny GitHub Actions workflow `live-smoke`
+(pondelok 6:17 UTC) prebehne `scripts/smoke.py` proti zivemu t.me a spadne, ked sa
+ktorykolvek z osmich handle-ov zacne klasifikovat inak. Unit testy dokazuju, ze parser
+sedi na markup zachyteny 19. 8. 2026; toto dokazuje, ze Telegram ten markup este ma.
+
+**Predvoleny vstup** je zamerne dvojkanalovy (`durov`, `telegram`): Apify denne
+autotestuje publikovany Actor a po troch behoch bez neprazdneho datasetu ho oznaci
+"under maintenance". Actor je pritom navrhnuty tak, aby pri necitatelnom kanale zlyhal -
+jeden kanal by tu kontrolu zhodil prave vtedy, keby sa Actor zachoval spravne.
