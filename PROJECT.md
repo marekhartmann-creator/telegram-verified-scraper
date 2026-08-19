@@ -2,8 +2,8 @@
 
 **Vlastník:** Marek Hartmann
 **Založené:** 19. 8. 2026
-**Stav:** v0.6 — 46 testov, 8/8 živých stavov, Actor overený end-to-end pod Apify SDK; pripravené na push a build, nenasadené do Apify Store
-**Repo (plán):** github.com/marekhartmann-creator/telegram-verified-scraper
+**Stav:** v0.6 — repo na GitHube, CI zelené, 46 testov, 8/8 živých stavov, Actor overený end-to-end pod Apify SDK; zostáva build a publikovanie na Apify
+**Repo:** https://github.com/marekhartmann-creator/telegram-verified-scraper (publikované 19. 8. 2026)
 **Časový rozpočet:** 2–4 dni
 **Peňažný rozpočet:** 0 € (podmienka: žiadna investícia pred prvým príjmom)
 
@@ -241,3 +241,19 @@ vrátil neúplný dataset a vyfakturoval.
   ale netestované pod záťažou.
 * **Segment sa zaplní skôr, než získa recenzie.** Toto je hlavné biznis riziko,
   nie technické.
+
+## 11. Obmedzenia prostredia
+
+* **Bridge Runtime beží pod účtom `SYSTEM`** (`C:\WINDOWS\system32\config\systemprofile`),
+  nie pod Marekovým používateľom. Nevidí teda jeho `gh auth login` ani Git
+  Credential Manager — testy, scraping a lokálne behy cez Bridge fungujú, ale
+  `git push`, `gh` a čokoľvek autentifikované musí spustiť Marek sám.
+  Riešiteľné prehodením služby na jeho účet alebo vlastným `GH_TOKEN` pre Bridge.
+* Cloudový kontajner Cowork session nemá sieťový prístup na `t.me`, preto všetka
+  živá verifikácia prebieha cez Bridge na Marekovom PC.
+
+## 12. Publikovanie
+
+* Repo: pushnuté 19. 8. 2026, 39 súborov, 2 commity, `main`.
+* GitHub Actions `tests`: **success** (pytest na Python 3.11/3.12/3.13, Linux) —
+  prvé potvrdenie, že kód beží aj mimo Windows/3.14, kde bol vyvíjaný.

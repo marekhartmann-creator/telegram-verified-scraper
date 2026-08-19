@@ -1,5 +1,7 @@
 # Telegram Channel Scraper — verified results or an explicit error
 
+[![tests](https://github.com/marekhartmann-creator/telegram-verified-scraper/actions/workflows/tests.yml/badge.svg)](https://github.com/marekhartmann-creator/telegram-verified-scraper/actions/workflows/tests.yml)
+
 Scrape **public Telegram channels** without an API key, a bot token or a phone
 number: posts, views, reactions, media URLs, forwards, hashtags and mentions,
 with date and keyword filtering.
