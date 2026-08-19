@@ -8,7 +8,7 @@
             "type": "string",
             "title": "Verified posts",
             "description": "One item per post that passed verification. A post is only written here when the channel it came from was confirmed readable.",
-            "template": "{{links.apiDefaultDatasetUrl}}/items?clean=true"
+            "template": "{{links.apiDefaultDatasetUrl}}/items"
         },
         "runSummary": {
             "type": "string",
