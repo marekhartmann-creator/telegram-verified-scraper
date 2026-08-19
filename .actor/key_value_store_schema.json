@@ -1,11 +1,12 @@
 {
-    "actorSpecification": 1,
+    "actorKeyValueStoreSchemaVersion": 1,
     "title": "Run outputs",
+    "description": "Where the per-channel verification report is stored.",
     "collections": {
         "runSummary": {
             "title": "Run summary",
             "description": "Per-channel verification report: state, verdict, id coverage, page failures. Written on every run, including failed ones.",
-            "keys": ["RUN_SUMMARY"],
+            "key": "RUN_SUMMARY",
             "contentTypes": ["application/json"]
         }
     }
