@@ -1,6 +1,6 @@
 {
     "actorSpecification": 1,
-    "name": "telegram-channel-scraper-verified",
+    "name": "telegram-channel-scraper",
     "title": "Telegram Channel Scraper - Verified Posts",
     "description": "Scrapes public Telegram channels (posts, views, reactions, media). Never reports an unreadable channel as an empty one - it fails with a reason.",
     "version": "0.1",
