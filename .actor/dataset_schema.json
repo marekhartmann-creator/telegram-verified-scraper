@@ -1,0 +1,23 @@
+{
+    "actorSpecification": 1,
+    "fields": {},
+    "views": {
+        "posts": {
+            "title": "Posts",
+            "transformation": { "fields": ["channel", "postId", "datetime", "text", "views", "reactionsTotal", "url", "media"] },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "channel": { "label": "Channel" },
+                    "postId": { "label": "Post ID" },
+                    "datetime": { "label": "Date" },
+                    "text": { "label": "Text" },
+                    "views": { "label": "Views" },
+                    "reactionsTotal": { "label": "Reactions" },
+                    "url": { "label": "URL", "format": "link" },
+                    "media": { "label": "Media" }
+                }
+            }
+        }
+    }
+}

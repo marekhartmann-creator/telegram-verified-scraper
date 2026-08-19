@@ -1,0 +1,12 @@
+{
+    "actor-start": {
+        "eventTitle": "Actor start",
+        "eventDescription": "Charged once per run. Set to zero: an empty run must cost the user nothing.",
+        "eventPriceUsd": 0
+    },
+    "post-scraped": {
+        "eventTitle": "Verified post",
+        "eventDescription": "Charged per post that was verified and written to the dataset.",
+        "eventPriceUsd": 0.002
+    }
+}

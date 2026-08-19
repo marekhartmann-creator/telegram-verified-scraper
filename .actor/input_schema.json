@@ -1,0 +1,75 @@
+{
+    "title": "Telegram Channel Scraper — Verified",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "channels": {
+            "title": "Public channels",
+            "type": "array",
+            "description": "Channel handles or t.me links, e.g. durov, @durov, https://t.me/durov. Private channels, groups and user profiles are not supported by design.",
+            "editor": "stringList",
+            "prefill": [
+                "durov"
+            ],
+            "minItems": 1
+        },
+        "maxPostsPerChannel": {
+            "title": "Max posts per channel",
+            "type": "integer",
+            "description": "Hard cap on posts per channel. 0 means the whole readable history (can be expensive).",
+            "default": 100,
+            "minimum": 0,
+            "unit": "posts"
+        },
+        "minDate": {
+            "title": "Only posts newer than",
+            "type": "string",
+            "description": "ISO date, e.g. 2026-01-31. Pagination stops as soon as older posts appear.",
+            "editor": "datepicker"
+        },
+        "maxDate": {
+            "title": "Only posts older than",
+            "type": "string",
+            "description": "ISO date, e.g. 2026-08-01.",
+            "editor": "datepicker"
+        },
+        "searchTerms": {
+            "title": "Keyword filter",
+            "type": "array",
+            "description": "Keep only posts whose text contains at least one of these terms (case-insensitive). Leave empty to keep everything.",
+            "editor": "stringList"
+        },
+        "includeMediaUrls": {
+            "title": "Include media URLs",
+            "type": "boolean",
+            "description": "Photo, video, voice, document and sticker URLs.",
+            "default": true
+        },
+        "maxConcurrency": {
+            "title": "Channels scraped in parallel",
+            "type": "integer",
+            "description": "How many channels to fetch at the same time (1-10). Higher is faster and cheaper in compute, but hits Telegram harder.",
+            "default": 5,
+            "minimum": 1,
+            "maximum": 10
+        },
+        "failOnUnreadableChannel": {
+            "title": "Fail the run when a channel cannot be read",
+            "type": "boolean",
+            "description": "ON (recommended): if any channel is missing, private, restricted or only partially loaded, the run ends as FAILED with a reason instead of quietly returning fewer posts. OFF: partial results are accepted and the problem is reported in the run summary only.",
+            "default": true
+        },
+        "proxyConfiguration": {
+            "title": "Proxy",
+            "type": "object",
+            "description": "Optional. Datacenter proxies are usually enough.",
+            "editor": "proxy",
+            "default": {
+                "useApifyProxy": true
+            }
+        }
+    },
+    "required": [
+        "channels"
+    ]
+}
