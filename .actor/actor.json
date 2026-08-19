@@ -1,14 +1,15 @@
 {
     "actorSpecification": 1,
     "name": "telegram-channel-scraper-verified",
-    "title": "Telegram Channel Scraper — Verified or Fails Loudly",
-    "description": "Scrapes public Telegram channels (posts, views, reactions, media). Never reports an unreadable channel as an empty one, and never charges for a run that returns nothing.",
+    "title": "Telegram Channel Scraper - Verified Posts",
+    "description": "Scrapes public Telegram channels (posts, views, reactions, media). Never reports an unreadable channel as an empty one - it fails with a reason.",
     "version": "0.1",
     "buildTag": "latest",
     "meta": {
         "templateId": "python-start"
     },
     "input": "./input_schema.json",
+    "output": "./output_schema.json",
     "dockerfile": "../Dockerfile",
     "storages": {
         "dataset": "./dataset_schema.json",
