@@ -1,10 +1,77 @@
 {
     "actorSpecification": 1,
-    "fields": {},
+    "fields": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "Telegram post",
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+            "channel": { "type": "string", "title": "Channel handle" },
+            "postId": { "type": "integer", "title": "Post ID" },
+            "url": { "type": "string", "title": "Post URL", "format": "uri" },
+            "datetime": { "type": ["string", "null"], "title": "Published at (ISO 8601)" },
+            "text": { "type": ["string", "null"], "title": "Post text" },
+            "textHtml": { "type": ["string", "null"], "title": "Post HTML (only when includeHtml is on)" },
+            "views": { "type": ["integer", "null"], "title": "Views" },
+            "author": { "type": ["string", "null"], "title": "Post signature" },
+            "isForwarded": { "type": "boolean", "title": "Is a forward" },
+            "forwardedFrom": { "type": ["string", "null"], "title": "Forwarded from" },
+            "forwardedFromUrl": { "type": ["string", "null"], "title": "Forwarded from URL" },
+            "isReply": { "type": "boolean", "title": "Is a reply" },
+            "replyToUrl": { "type": ["string", "null"], "title": "Replied-to post URL" },
+            "isEdited": { "type": "boolean", "title": "Was edited" },
+            "hashtags": { "type": "array", "title": "Hashtags", "items": { "type": "string" } },
+            "mentions": { "type": "array", "title": "Mentions", "items": { "type": "string" } },
+            "links": { "type": "array", "title": "Links in the text", "items": { "type": "string" } },
+            "media": {
+                "type": "array",
+                "title": "Media",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "properties": {
+                        "type": { "type": "string", "title": "photo, video, videoThumb, voice, document or sticker" },
+                        "url": { "type": ["string", "null"], "title": "Media URL" }
+                    }
+                }
+            },
+            "linkPreview": {
+                "type": ["object", "null"],
+                "title": "Link preview",
+                "additionalProperties": true,
+                "properties": {
+                    "url": { "type": ["string", "null"] },
+                    "siteName": { "type": ["string", "null"] },
+                    "title": { "type": ["string", "null"] },
+                    "description": { "type": ["string", "null"] },
+                    "imageUrl": { "type": ["string", "null"] }
+                }
+            },
+            "reactions": {
+                "type": "array",
+                "title": "Reactions",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "properties": {
+                        "emoji": { "type": ["string", "null"] },
+                        "count": { "type": "integer" },
+                        "isPaid": { "type": "boolean" }
+                    }
+                }
+            },
+            "reactionsTotal": { "type": ["integer", "null"], "title": "Reactions total (null = reactions disabled)" },
+            "hasUnsupportedMedia": { "type": "boolean", "title": "Contains media the web preview cannot render" }
+        },
+        "required": ["channel", "postId", "url"]
+    },
     "views": {
         "posts": {
             "title": "Posts",
-            "transformation": { "fields": ["channel", "postId", "datetime", "text", "views", "reactionsTotal", "url", "media"] },
+            "description": "One row per verified post.",
+            "transformation": {
+                "fields": ["channel", "postId", "datetime", "text", "views", "reactionsTotal", "url", "media"]
+            },
             "display": {
                 "component": "table",
                 "properties": {
@@ -18,6 +85,14 @@
                     "media": { "label": "Media" }
                 }
             }
+        },
+        "engagement": {
+            "title": "Engagement only",
+            "description": "Compact view for analytics: no text, no media.",
+            "transformation": {
+                "fields": ["channel", "postId", "datetime", "views", "reactionsTotal", "isForwarded", "url"]
+            },
+            "display": { "component": "table" }
         }
     }
 }

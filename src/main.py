@@ -123,8 +123,10 @@ async def main() -> None:
             "rejectedInputs": rejected,
             "reports": reports,
         }
+        # The verification reports live in the key-value store, not in the
+        # dataset: the dataset stays one clean row per post, which is also the
+        # only thing the customer is charged for.
         await Actor.set_value("RUN_SUMMARY", summary, content_type="application/json")
-        await Actor.push_data(summary)
 
         broken = [r for r in reports if r["verdict"] in ("FAILED", "PARTIAL")]
         if broken and fail_on_unreadable:

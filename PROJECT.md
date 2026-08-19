@@ -218,6 +218,23 @@ ktoré ani testy, ani živý scraping nemohli:
 Druhý riadok je celý produkt: incumbent by na tom istom vstupe ohlásil úspech,
 vrátil neúplný dataset a vyfakturoval.
 
+**19. 8. 2026 — v0.7, nasadené na Apify**
+
+* Actor vytvorený z verejného GitHub repa (bez OAuth, cez „Another Git provider"
+  — verejné repo nepotrebuje deployment key).
+* **Build 0.0.1: Succeeded** za 15 s, $0,003.
+* **Prvý ostrý beh na Apify: Succeeded, 101 výsledkov, 18 s, $0,002.** Dataset
+  view „Posts" sedí, reakcie sa parsujú (80 200 / 227 700), views aj ID sedia.
+* Vyplnené Display information: názov `Telegram Channel Scraper - Verified Posts`
+  (kľúčové slová dopredu kvôli vyhľadávaniu v Store), popis do 300 znakov,
+  kategórie Social media / Automation / Developer tools.
+* Apify si vyžiadal **output schema** pred publikovaním. Doplnené:
+  `.actor/dataset_schema.json` s plnou definíciou polí (predtým prázdne `fields`)
+  a `.actor/key_value_store_schema.json` pre `RUN_SUMMARY`.
+* Pri tom padlo rozhodnutie: **verifikačné reporty už nejdú do datasetu.**
+  Dataset je odteraz čisto jeden riadok = jeden príspevok (a jediné, za čo sa
+  platí); reporty žijú v key-value store. Export je tým pádom čistý.
+
 ## 9. Čo ďalej (poradie)
 
 1. ~~Živý smoke test~~ — hotové 19. 8. 2026, dve chyby nájdené a opravené.

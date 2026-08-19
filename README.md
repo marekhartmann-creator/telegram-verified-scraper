@@ -107,8 +107,10 @@ One dataset item per post:
 }
 ```
 
-Plus one `channelReport` item per channel and one `runSummary` item per run
-(also stored in the key-value store as `RUN_SUMMARY`).
+The dataset holds **only posts** — one clean row each, and the only thing you are
+charged for. The verification reports (per-channel state, verdict, id coverage,
+page failures) are written to the key-value store as `RUN_SUMMARY` on every run,
+including runs that fail.
 
 ## Pricing
 
