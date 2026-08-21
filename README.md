@@ -128,3 +128,14 @@ anything.
 
 News and OSINT monitoring, brand and competitor tracking, crypto signal channel
 archiving, market and disinformation research, dataset building.
+
+
+## Need a scraper for something else?
+
+I build custom Apify Actors and browser automation the same way this one is built:
+a verified result or an explicit failure, never an empty dataset sold as a success.
+
+- My other Actors: https://apify.com/marekhartmann
+- Code and test suites: https://github.com/marekhartmann-creator
+
+Tell me the site and what you need out of it.
